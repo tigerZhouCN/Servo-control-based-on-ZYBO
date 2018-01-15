@@ -1,0 +1,149 @@
+状态机，捕捉四个按键分别对应舵机的45°、90°、135°、180°
+	通过vivado按正常的仿真-综合-implementation-generate bitstream-Progame drives
+	可通过ZYBO班上的BTN四个按键控制舵机转动
+	project代码：
+	`timescale 1ns / 1ps
+	//////////////////////////////////////////////////////////////////////////////////
+	// Company: 
+	// Engineer: 
+	// 
+	// Create Date: 2017/04/26 15:22:17
+	// Design Name: 
+	// Module Name: test1
+	// Project Name: 
+	// Target Devices: 
+	// Tool Versions: 
+	// Description: 
+	// 
+	// Dependencies: 
+	// 
+	// Revision:
+	// Revision 0.01 - File Created
+	// Additional Comments:
+	// 
+	//////////////////////////////////////////////////////////////////////////////////
+	
+	
+	module test1(input clk,input [3:0] swt,output pwm1);
+	 //   input clk;   
+	  //  input[3:0] swt;
+	  //  output pwm1;  
+	    reg pwm1;  
+	    reg[32:0] counter; 
+	    reg[32:0] counter1;
+	    parameter jiaodu_45 = 8'd10;
+	    parameter jiaodu_90 = 8'd15;
+	    parameter jiaodu_135 = 8'd20;
+	    parameter jiaodu_180 = 8'd25;
+	//    initial   //初始化为0°
+	//      begin
+	//        counter = counter + 1    
+	//            if(counter ==32'd5000)   //  50MHz  0.1ms    
+	//              begin
+	//                counter = 0;
+	//                counter1= counter1 + 1;    
+	//              end
+	//            if(counter1 == 8'd1)
+	//              pwm1  <= 1;    
+	//              else if(counter1 ==jiaodu_ini)     
+	//                pwm1 <= 0;    
+	//              else if (counter1 == 16'd200)     
+	//                counter1=0;     
+	//        end   
+	    always@(posedge clk)   
+	    begin
+	      case (swt)
+	      4'b0001:
+	        begin
+	        counter = counter + 1 ;   
+	        if(counter == 32'd12500)   
+	        //  125MHz  0.1ms    
+	          begin
+	            counter = 0;
+	            counter1= counter1 + 1;    
+	          end   //generate  a 0.1ms 's clk
+	        if(counter1 == 8'd1)
+	          pwm1  <= 1;    
+	          else if(counter1 ==jiaodu_45)     
+	            pwm1 <= 0;    
+	          else if (counter1 == 16'd200)     
+	            counter1=0;     
+	          end 
+	        4'b0010:
+	                 begin
+	                 counter = counter + 1 ;   
+	                 if(counter ==32'd12500) 
+	                   //  125MHz  0.1ms    
+	                   begin
+	                     counter = 0;
+	                     counter1= counter1 + 1;    
+	                   end   //generate  a 0.1ms 's clk
+	                 if(counter1 == 8'd1)
+	                   pwm1  <= 1;    
+	                   else if(counter1 ==jiaodu_90)     
+	                     pwm1 <= 0;    
+	                   else if (counter1 == 16'd200)     
+	                     counter1=0;     
+	                   end 
+	         4'b0100:
+	                          begin
+	                          counter = counter + 1    ;
+	                          if(counter ==32'd12500)  
+	                           //  125MHz  0.1ms    
+	                            begin
+	                              counter = 0;
+	                              counter1= counter1 + 1;    
+	                            end   //generate  a 0.1ms 's clk
+	                          if(counter1 == 8'd1)
+	                            pwm1  <= 1;    
+	                            else if(counter1 ==jiaodu_135)     
+	                              pwm1 <= 0;    
+	                            else if (counter1 == 16'd200)     
+	                              counter1=0;     
+	                            end 
+	         4'b1000:
+	                                   begin
+	                                   counter = counter + 1   ; 
+	                                   if(counter ==32'd12500)  
+	                                    //  125MHz  0.1ms    
+	                                     begin
+	                                       counter = 0;
+	                                       counter1= counter1 + 1;    
+	                                     end   //generate  a 0.1ms 's clk
+	                                   if(counter1 == 8'd1)
+	                                     pwm1  <= 1;    
+	                                     else if(counter1 ==jiaodu_180)     
+	                                       pwm1 <= 0;    
+	                                     else if (counter1 == 16'd200)     
+	                                       counter1=0;     
+	                                     end  
+	    endcase
+	    end
+	endmodule
+	
+	约束文件（引脚定义等）代码：
+	# ZYBO Pin Assignments
+	############################
+	# On-board Slide Switches  #
+	############################
+	set_property PACKAGE_PIN R18 [get_ports swt[0]]
+	set_property IOSTANDARD LVCMOS33 [get_ports swt[0]]
+	set_property PACKAGE_PIN P16 [get_ports swt[1]]
+	set_property IOSTANDARD LVCMOS33 [get_ports swt[1]]
+	set_property PACKAGE_PIN V16 [get_ports swt[2]]
+	set_property IOSTANDARD LVCMOS33 [get_ports swt[2]]
+	set_property PACKAGE_PIN Y16 [get_ports swt[3]]
+	set_property IOSTANDARD LVCMOS33 [get_ports swt[3]]
+	
+	############################
+	# On-board led             #
+	############################
+	set_property PACKAGE_PIN T20 [get_ports pwm1]
+	set_property IOSTANDARD LVCMOS33 [get_ports pwm1]
+	
+	
+	############################
+	# sys_clk                  #
+	############################
+	set_property PACKAGE_PIN L16 [get_ports clk]
+	set_property IOSTANDARD LVCMOS33 [get_ports clk]
